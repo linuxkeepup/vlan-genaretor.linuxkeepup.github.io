@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Switch Command Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .container {
+        max-width: auto;
+        margin: 0 auto;
+    }
+    .input-fields {
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    .input-fields label, .input-fields input {
+        display: block;
+        margin-bottom: 10px;
+    }
+    .buttons {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .buttons button {
+        margin: 0 5px;
+    }
+    .output-fields {
+        background-color: #f0f0f0;
+        padding: 10px;
+        overflow: hidden; /* Clear float */
+    }
+    .output-fields label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    .output-fields textarea {
+        width: 400px;
+        height: 300px;
+        margin-right: 10px;
+        resize: vertical;
+        float: left;
+    }
+    .scrollbar {
+        overflow-y: scroll;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="input-fields">
+        <label for="vlan_name">VLAN Name:</label>
+        <input type="text" id="vlan_name">
+        <label for="vlan_id_start">VLAN ID Start:</label>
+        <input type="number" id="vlan_id_start">
+        <label for="vlan_id_end">VLAN ID End:</label>
+        <input type="number" id="vlan_id_end">
+    </div>
+    <div class="buttons">
+        <button onclick="generateCommands()">Generate Commands</button>
+        <button onclick="reset()">Reset</button>
+    </div>
+    <div class="output-fields">
+        <label>Cisco Commands:</label>
+        <textarea id="cisco_text" class="scrollbar"></textarea>
+        <label>Juniper Commands:</label>
+        <textarea id="juniper_text" class="scrollbar"></textarea>
+        <label>Huawei Commands:</label>
+        <textarea id="huawei_text" class="scrollbar"></textarea>
+    </div>
+</div>
+
+<script>
+    function generateCommands() {
+        var vlanName = document.getElementById('vlan_name').value;
+        var vlanIdStart = parseInt(document.getElementById('vlan_id_start').value);
+        var vlanIdEnd = parseInt(document.getElementById('vlan_id_end').value);
+
+        var ciscoCommands = [];
+        var juniperCommands = [];
+        var huaweiCommands = [];
+
+        for (var vlanId = vlanIdStart; vlanId <= vlanIdEnd; vlanId++) {
+            ciscoCommands.push(`vlan ${vlanId}\nname ${vlanName}${vlanId}`);
+            juniperCommands.push(`set vlans ${vlanName}${vlanId} vlan-id ${vlanId}`);
+            huaweiCommands.push(`vlan ${vlanId}\ndescription ${vlanName}${vlanId}`);
+        }
+
+        document.getElementById('cisco_text').value = ciscoCommands.join('\n\n');
+        document.getElementById('juniper_text').value = juniperCommands.join('\n\n');
+        document.getElementById('huawei_text').value = huaweiCommands.join('\n\n');
+    }
+
+    function reset() {
+        document.getElementById('vlan_name').value = '';
+        document.getElementById('vlan_id_start').value = '';
+        document.getElementById('vlan_id_end').value = '';
+        document.getElementById('cisco_text').value = '';
+        document.getElementById('juniper_text').value = '';
+        document.getElementById('huawei_text').value = '';
+    }
+</script>
+</body>
+</html>
